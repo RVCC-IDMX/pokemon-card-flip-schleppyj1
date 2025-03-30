@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon Card Flip Assignment</title>
+  <link rel="shortcut icon" href="./microscope.png" type="image/png">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <nav class="site-nav">
+        <div class="logo">
+          <a href="index.html">
+            <img src="./pokeball.png" alt="Pokeball Logo" class="logo-img">
+            <span>Pokemon Card Flip</span>
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="assignment.html" class="nav-link">Assignment</a></li>
+          <li><a href="js-tutorial.html" class="nav-link">DOM Calls</a></li>
+          <li><a href="global.html" class="nav-link">Global Scope</a></li>
+          <li><a href="testing.html" class="nav-link">Testing</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <h1>Pokemon Card Flip:<br>DOM Manipulation Assignment</h1>
+
+  <h2>Overview</h2>
+  <p>
+    In this assignment, you'll build an interactive Pokemon Card Flip application using JavaScript DOM manipulation.
+    The application connects to the PokeAPI to fetch Pokemon data, creates interactive card elements, and
+    provides a smooth flipping animation when users interact with the cards. Throughout this project, you'll
+    learn and practice key web development concepts like DOM manipulation, event handling, asynchronous
+    JavaScript, and working with external APIs.
+  </p>
+
+  <h2>Learning Objectives</h2>
+  <ul>
+    <li>Create and manipulate DOM elements dynamically</li>
+    <li>Implement event delegation for efficient event handling</li>
+    <li>Use CSS transitions for smooth animations</li>
+    <li>Work with the fetch API and handle asynchronous operations</li>
+    <li>Process and display data from an external API</li>
+    <li>Implement loading states for better user experience</li>
+    <li>Store and retrieve data using element datasets</li>
+  </ul>
+
+  <h2>Project Structure</h2>
+  <p>
+    The project is organized into several modules, each focusing on specific functionality:
+  </p>
+
+  <table>
+    <tr>
+      <th>Module</th>
+      <th>File</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>Application Logic</td>
+      <td>app.js</td>
+      <td>Main application logic for creating and managing Pokemon cards</td>
+    </tr>
+    <tr>
+      <td>Pokemon Service</td>
+      <td>pokemon.js</td>
+      <td>Functions for fetching and processing Pokemon data from the PokeAPI</td>
+    </tr>
+    <tr>
+      <td>HTML Structure</td>
+      <td>index.html</td>
+      <td>Base HTML structure with containers for cards and loading spinner</td>
+    </tr>
+    <tr>
+      <td>Styling</td>
+      <td>styles.css</td>
+      <td>CSS styles for cards, animations, and layout</td>
+    </tr>
+    <tr>
+      <td>Assets</td>
+      <td>assets/</td>
+      <td>Images such as Pokeball for card fronts</td>
+    </tr>
+  </table>
+
+  <h2>Getting Started</h2>
+  <ol>
+    <li>Clone the repository</li>
+    <li>Open the project in your code editor</li>
+    <li>Start by examining the provided HTML and CSS files</li>
+    <li>Complete the code challenges in app.js and pokemon.js marked with <code>// CHALLENGE X:</code> comments</li>
+    <li>Test your implementation by opening index.html in a browser</li>
+  </ol>
+
+  <div class="tip">
+    <strong>Tip:</strong> Complete the challenges in order as they build upon each other.
+    The Pokemon Service module (pokemon.js) should be completed first, followed by the main Application Logic (app.js).
+  </div>
+
+  <h2>Challenge List</h2>
+
+  <h3>Pokemon Service Module (pokemon.js)</h3>
+  <div class="challenge">
+    <h3>Challenge 1: Implement fetchRandomPokemon function</h3>
+    <p>
+      Create a function that fetches a random Pokemon from the PokeAPI. The function should:
+    </p>
+    <ul>
+      <li>Generate a random Pokemon ID between 1 and TOTAL_POKEMON</li>
+      <li>Use the fetch API to request data from the PokeAPI</li>
+      <li>Check if the response is successful</li>
+      <li>Process the raw data using the processPokemonData function</li>
+      <li>Return the processed Pokemon data or null if there's an error</li>
+      <li>Handle errors appropriately with try/catch</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 2: Implement fetchMultipleRandomPokemon function</h3>
+    <p>
+      Create a function that fetches multiple random Pokemon at once. The function should:
+    </p>
+    <ul>
+      <li>Accept a count parameter for the number of Pokemon to fetch</li>
+      <li>Create an array of promises for fetching random Pokemon</li>
+      <li>Use Promise.all to wait for all promises to resolve</li>
+      <li>Return the array of Pokemon data</li>
+      <li>Handle errors appropriately with try/catch</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 3: Implement processPokemonData function</h3>
+    <p>
+      Create a function that processes the raw Pokemon data into a more usable format. The function should:
+    </p>
+    <ul>
+      <li>Extract relevant information from the raw API data</li>
+      <li>Transform data into appropriate formats (e.g., capitalizing names, converting units)</li>
+      <li>Map complex structures to simpler ones (e.g., extracting type names from the types array)</li>
+      <li>Return a well-structured Pokemon object</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 4: Implement findStat function</h3>
+    <p>
+      Create a helper function to find a specific stat from the Pokemon stats array. The function should:
+    </p>
+    <ul>
+      <li>Use the Array.find method to locate the stat with the matching name</li>
+      <li>Return the base_stat value if found, or 0 if not found</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 5: Implement capitalizeFirstLetter function</h3>
+    <p>
+      Create a helper function to capitalize the first letter of a string and replace hyphens with spaces. The function
+      should:
+    </p>
+    <ul>
+      <li>Take a string as input</li>
+      <li>Capitalize the first character</li>
+      <li>Replace any hyphens with spaces</li>
+      <li>Return the formatted string</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 6: Implement PokemonService export</h3>
+    <p>
+      Create a global PokemonService object to expose the necessary functions. The export should:
+    </p>
+    <ul>
+      <li>Attach the PokemonService object to the window object</li>
+      <li>Include the fetchRandomPokemon and fetchMultipleRandomPokemon functions</li>
+      <li>Make the service accessible to other scripts</li>
+    </ul>
+  </div>
+
+  <h3>Application Logic Module (app.js)</h3>
+  <div class="challenge">
+    <h3>Challenge 7: Implement initApp function</h3>
+    <p>
+      Create the main initialization function for the application. The function should:
+    </p>
+    <ul>
+      <li>Show the loading spinner</li>
+      <li>Hide the card grid initially</li>
+      <li>Call createCardElements to create the card containers</li>
+      <li>Call fetchAndAssignPokemon to load Pokemon data</li>
+      <li>Set up event listeners</li>
+      <li>Hide the loading spinner and show the card grid when ready</li>
+      <li>Handle the asynchronous flow properly with await</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 8: Implement createCardElements function</h3>
+    <p>
+      Create a function that populates the grid with card elements. The function should:
+    </p>
+    <ul>
+      <li>Clear any existing cards in the grid</li>
+      <li>Reset the cards array</li>
+      <li>Create new card elements for the specified card count</li>
+      <li>Append each card to the card grid</li>
+      <li>Store references to the cards in the cards array</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 9: Implement createCardElement function</h3>
+    <p>
+      Create a function that generates a single card element with the proper structure. The function should:
+    </p>
+    <ul>
+      <li>Create the main card container element</li>
+      <li>Create the card inner, front, and back elements</li>
+      <li>Add the Pokeball image to the card front</li>
+      <li>Assemble the elements in the correct hierarchy</li>
+      <li>Set appropriate classes and data attributes</li>
+      <li>Return the fully constructed card element</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 10: Implement fetchAndAssignPokemon function</h3>
+    <p>
+      Create a function that fetches Pokemon data and assigns it to cards. The function should:
+    </p>
+    <ul>
+      <li>Use the PokemonService to fetch random Pokemon</li>
+      <li>Simulate a loading delay if the debug flag is enabled</li>
+      <li>Assign each Pokemon to the corresponding card</li>
+      <li>Handle errors appropriately with try/catch</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 11: Implement assignPokemonToCard function</h3>
+    <p>
+      Create a function that updates a card with Pokemon data. The function should:
+    </p>
+    <ul>
+      <li>Store the Pokemon data in the card's dataset</li>
+      <li>Clear existing content from the card back</li>
+      <li>Create and add elements for the Pokemon image, name, and types</li>
+      <li>Create and add elements for the Pokemon stats (height, weight, abilities)</li>
+      <li>Assemble all elements in the appropriate structure</li>
+      <li>Handle null/undefined inputs gracefully</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 12: Implement handleCardClick function</h3>
+    <p>
+      Create a function that handles click events on cards. The function should:
+    </p>
+    <ul>
+      <li>Find the parent card element if a child element was clicked</li>
+      <li>Toggle the 'flipped' class on the card</li>
+      <li>Exit early if no valid card was found</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 13: Implement setupEventListeners function</h3>
+    <p>
+      Create a function that sets up all event listeners. The function should:
+    </p>
+    <ul>
+      <li>Add a click event listener to the card grid</li>
+      <li>Use event delegation to handle clicks on child elements</li>
+      <li>Use the handleCardClick function as the event handler</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 14: Implement showLoading and hideLoading functions</h3>
+    <p>
+      Create functions to manage the loading spinner's visibility. The functions should:
+    </p>
+    <ul>
+      <li>Show the loading spinner by removing the 'hidden' class</li>
+      <li>Hide the loading spinner by adding the 'hidden' class</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Challenge 15: Initialize the application</h3>
+    <p>
+      Add the code to initialize the application when the DOM is loaded. This should:
+    </p>
+    <ul>
+      <li>Add an event listener for the 'DOMContentLoaded' event</li>
+      <li>Call the initApp function when the DOM is ready</li>
+    </ul>
+  </div>
+
+  <h2>Testing Your Implementation</h2>
+  <p>
+    As you complete each challenge, test your implementation by opening the index.html file in a browser.
+    You should see:
+  </p>
+  <ul>
+    <li>A loading spinner initially</li>
+    <li>A grid of cards displaying Pokeballs when loading completes</li>
+    <li>Cards that flip when clicked, revealing Pokemon details</li>
+    <li>Proper display of Pokemon names, types, and stats</li>
+    <li>Smooth animation when flipping cards</li>
+  </ul>
+
+  <div class="tip">
+    <strong>Tip:</strong> Use your browser's developer tools (F12 or Right-click → Inspect) to:
+    <ul>
+      <li>Check the console for any errors</li>
+      <li>Inspect the DOM structure</li>
+      <li>View network requests to the PokeAPI</li>
+      <li>Test your application on different screen sizes</li>
+    </ul>
+  </div>
+
+  <h2>Extension Challenges</h2>
+  <p>
+    If you complete all the main challenges and want to extend your project, here are some additional features to
+    implement:
+  </p>
+
+  <div class="challenge">
+    <h3>Extension 1: Add Filter by Type</h3>
+    <p>
+      Create a type filter that allows users to filter Pokemon cards by type (e.g., Fire, Water, Electric).
+    </p>
+    <ul>
+      <li>Add buttons or a dropdown for each Pokemon type</li>
+      <li>Update the card display to show only matching Pokemon</li>
+      <li>Add visual feedback for the active filter</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Extension 2: Implement "Catch Pokemon" Functionality</h3>
+    <p>
+      Add a feature to let users "catch" Pokemon and save them to a collection.
+    </p>
+    <ul>
+      <li>Add a "Catch" button to each Pokemon card</li>
+      <li>Store caught Pokemon in localStorage</li>
+      <li>Create a section to view caught Pokemon</li>
+      <li>Add the ability to release Pokemon from the collection</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Extension 3: Add Pokemon Details Modal</h3>
+    <p>
+      Create a modal dialog that shows more detailed information when a Pokemon is clicked.
+    </p>
+    <ul>
+      <li>Design and implement a modal component</li>
+      <li>Display additional Pokemon stats and information</li>
+      <li>Fetch and display Pokemon evolution chain data</li>
+      <li>Add animations for opening/closing the modal</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Extension 4: Implement Card Search</h3>
+    <p>
+      Add a search functionality to find specific Pokemon by name.
+    </p>
+    <ul>
+      <li>Create a search input field</li>
+      <li>Filter displayed cards as the user types</li>
+      <li>Add visual feedback for no results</li>
+      <li>Implement debouncing to avoid excessive filtering</li>
+    </ul>
+  </div>
+
+  <div class="challenge">
+    <h3>Extension 5: Add Sound Effects</h3>
+    <p>
+      Enhance the user experience by adding sound effects.
+    </p>
+    <ul>
+      <li>Play a flip sound when a card is turned</li>
+      <li>Play Pokemon cries when a card is revealed</li>
+      <li>Add background music with volume controls</li>
+      <li>Ensure sounds can be muted/disabled</li>
+    </ul>
+  </div>
+
+  <h2>Submission Guidelines</h2>
+  <p>
+    To submit your completed assignment:
+  </p>
+  <ol>
+    <li>Ensure all challenges are completed</li>
+    <li>Test thoroughly to fix any bugs</li>
+    <li>Optimize your code (remove console.logs, format properly)</li>
+    <li>Submit your code repository URL</li>
+    <li>Include a README.md file explaining:
+      <ul>
+        <li>How to run your project</li>
+        <li>Which challenges you completed</li>
+        <li>Any extension features you implemented</li>
+        <li>Challenges you faced and how you overcame them</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h2>Resources</h2>
+  <ul>
+    <li><a href="https://pokeapi.co/docs/v2">PokeAPI Documentation</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model">MDN: DOM Documentation</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">MDN: Using the Fetch API</a>
+    </li>
+  </ul>
+
+</body>
+
+</html>

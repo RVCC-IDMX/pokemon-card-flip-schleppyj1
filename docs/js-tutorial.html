@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript DOM Manipulation Tutorial</title>
+  <link rel="shortcut icon" href="./microscope.png" type="image/png">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <nav class="site-nav">
+        <div class="logo">
+          <a href="index.html">
+            <img src="./pokeball.png" alt="Pokeball Logo" class="logo-img">
+            <span>Pokemon Card Flip</span>
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="assignment.html" class="nav-link">Assignment</a></li>
+          <li><a href="js-tutorial.html" class="nav-link">DOM Calls</a></li>
+          <li><a href="global.html" class="nav-link">Global Scope</a></li>
+          <li><a href="testing.html" class="nav-link">Testing</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <h1>JavaScript DOM Manipulation Tutorial</h1>
+
+  <h2>Introduction to DOM Manipulation</h2>
+  <p>
+    The Document Object Model (DOM) is a programming interface for HTML documents. It represents the page
+    as a tree of nodes that JavaScript can interact with to create dynamic web applications. DOM manipulation
+    is the process of using JavaScript to:
+  </p>
+  <ul>
+    <li>Create, modify, or remove HTML elements</li>
+    <li>Change element attributes and styling</li>
+    <li>Respond to user interactions like clicks and keyboard input</li>
+    <li>Create animations and visual effects</li>
+    <li>Update content dynamically without reloading the page</li>
+  </ul>
+  <p>
+    In our Pokemon Card Flip Application, we use DOM manipulation extensively to create interactive
+    card elements that users can flip, displaying Pokemon data pulled from an API.
+  </p>
+
+  <h2>Selecting DOM Elements</h2>
+  <p>
+    Before you can manipulate elements, you need to select them. JavaScript provides several methods
+    for selecting elements from the DOM:
+  </p>
+
+  <div class="example">
+    <h3>Selecting Elements</h3>
+    <pre><code>// Select by ID (returns a single element)
+const cardGrid = document.getElementById('card-grid');
+
+// Select by class name (returns a collection)
+const cards = document.getElementsByClassName('card');
+
+// Select by tag name (returns a collection)
+const images = document.getElementsByTagName('img');
+
+// Select using CSS selectors (returns the first match)
+const cardBack = document.querySelector('.card-back');
+
+// Select all matching elements (returns a NodeList)
+const allCardBacks = document.querySelectorAll('.card-back');
+
+// In our Pokemon Card Flip app:
+const loadingSpinner = document.getElementById('loading-spinner');
+const flippedCards = document.querySelectorAll('.card.flipped');</code></pre>
+  </div>
+
+  <div class="note">
+    <strong>Note:</strong> Collections returned by methods like <code>getElementsByClassName</code> are live,
+    meaning they update automatically when the DOM changes. NodeLists returned by <code>querySelectorAll</code>
+    are static snapshots and don't update automatically.
+  </div>
+
+  <h2>Creating and Manipulating Elements</h2>
+  <p>
+    DOM manipulation often involves creating new elements, setting their attributes and content, and
+    adding them to the document.
+  </p>
+
+  <div class="pattern">
+    <h3>1. Creating Elements</h3>
+    <p>
+      Use <code>document.createElement()</code> to create new HTML elements.
+    </p>
+    <pre><code>// In our Pokemon Card Flip app:
+function createCardElement(index) {
+  // Create the card container
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.index = index;
+
+  // Create inner elements
+  const cardInner = document.createElement('div');
+  cardInner.className = 'card-inner';
+
+  const cardFront = document.createElement('div');
+  cardFront.className = 'card-front';
+
+  const cardBack = document.createElement('div');
+  cardBack.className = 'card-back';
+
+  // Create and configure an image element
+  const pokeballImg = document.createElement('img');
+  pokeballImg.src = 'assets/pokeball.png';
+  pokeballImg.alt = 'Pokéball';
+  pokeballImg.className = 'pokeball-img';
+
+  // ... additional code to assemble elements
+
+  return card;
+}</code></pre>
+  </div>
+
+  <div class="pattern">
+    <h3>2. Manipulating Element Properties and Attributes</h3>
+    <p>
+      You can change an element's properties, attributes, and dataset.
+    </p>
+    <pre><code>// Set element properties
+element.className = 'new-class';
+element.id = 'unique-id';
+element.innerHTML = 'New content';
+element.textContent = 'Text only content';
+
+// Set element attributes
+element.setAttribute('src', 'image.jpg');
+element.setAttribute('data-id', '123');
+
+// Dataset API for data-* attributes
+element.dataset.index = 5; // Sets data-index="5"
+element.dataset.pokemonId = 25; // Sets data-pokemon-id="25"
+
+// In our Pokemon Card Flip app:
+function assignPokemonToCard(card, pokemon) {
+  // Store Pokemon data in card dataset
+  card.dataset.pokemon = JSON.stringify(pokemon);
+
+  // Get card back element
+  const cardBack = card.querySelector('.card-back');
+
+  // Clear existing content
+  cardBack.innerHTML = '';
+
+  // Create and configure Pokemon elements
+  const pokemonImg = document.createElement('img');
+  pokemonImg.src = pokemon.sprite;
+  pokemonImg.alt = pokemon.name;
+  pokemonImg.className = 'pokemon-img';
+
+  // ... additional element configuration
+}</code></pre>
+  </div>
+
+  <div class="pattern">
+    <h3>3. Modifying the DOM Tree</h3>
+    <p>
+      Add, replace, or remove elements in the DOM tree.
+    </p>
+    <pre><code>// Append a child element
+parent.appendChild(child);
+
+// Insert before another element
+parent.insertBefore(newChild, referenceChild);
+
+// Replace a child
+parent.replaceChild(newChild, oldChild);
+
+// Remove a child
+parent.removeChild(child);
+
+// Modern methods
+parent.append(child1, child2, text); // Multiple nodes and text
+parent.prepend(child); // Insert at the beginning
+element.before(newElement); // Insert before element
+element.after(newElement); // Insert after element
+element.replaceWith(newElement); // Replace element
+element.remove(); // Remove element
+
+// In our Pokemon Card Flip app:
+function createCardElements() {
+  // Clear existing cards
+  cardGrid.innerHTML = '';
+  cards = [];
+
+  // Create new cards
+  for (let i = 0; i < CARD_COUNT; i++) {
+    const card = createCardElement(i);
+    cardGrid.appendChild(card);
+    cards.push(card);
+  }
+}</code></pre>
+  </div>
+
+  <h2>Working with Classes and Styles</h2>
+  <p>
+    Changing the visual appearance of elements is a common DOM manipulation task.
+  </p>
+
+  <div class="compare">
+    <div>
+      <h4>Working with Classes</h4>
+      <pre><code>// Add class
+element.classList.add('active');
+
+// Remove class
+element.classList.remove('inactive');
+
+// Toggle class (add if absent, remove if present)
+element.classList.toggle('selected');
+
+// Check if element has a class
+if (element.classList.contains('flipped')) {
+  // Do something with flipped elements
+}
+
+// In our Pokemon Card Flip app:
+function handleCardClick(event) {
+  // Find the clicked card
+  let card = event.target;
+  while (card && !card.classList.contains('card')) {
+    card = card.parentElement;
+  }
+
+  if (!card) return;
+
+  // Toggle card flip
+  card.classList.toggle('flipped');
+}</code></pre>
+    </div>
+    <div>
+      <h4>Working with Inline Styles</h4>
+      <pre><code>// Set individual style properties
+element.style.color = 'blue';
+element.style.backgroundColor = 'yellow';
+element.style.marginTop = '10px';
+
+// Using camelCase for CSS properties with hyphens
+element.style.borderRadius = '5px';
+element.style.fontSize = '14px';
+
+// Set multiple styles at once
+Object.assign(element.style, {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+});
+
+// In our Pokemon Card Flip app:
+function showLoading() {
+  loadingSpinner.classList.remove('hidden');
+}
+
+function hideLoading() {
+  loadingSpinner.classList.add('hidden');
+}</code></pre>
+    </div>
+  </div>
+
+  <h2>Event Handling</h2>
+  <p>
+    Event handling allows your web application to respond to user interactions and other changes.
+  </p>
+
+  <div class="example">
+    <h3>Adding Event Listeners</h3>
+    <pre><code>// Basic event listener
+element.addEventListener('click', function(event) {
+  console.log('Element clicked!');
+});
+
+// Using named functions
+function handleClick(event) {
+  console.log('Element clicked!');
+}
+element.addEventListener('click', handleClick);
+
+// Arrow functions
+element.addEventListener('click', (event) => {
+  console.log('Element clicked!');
+});
+
+// In our Pokemon Card Flip app:
+function setupEventListeners() {
+  // Card click event (event delegation)
+  cardGrid.addEventListener('click', handleCardClick);
+}</code></pre>
+  </div>
+
+  <div class="pattern">
+    <h3>Event Delegation</h3>
+    <p>
+      Event delegation is a technique of attaching a single event listener to a parent element
+      to handle events for its children, including those added dynamically.
+    </p>
+    <pre><code>// Instead of adding event listeners to many individual cards:
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', handleCardClick);
+});
+
+// We use event delegation in our Pokemon Card Flip app:
+cardGrid.addEventListener('click', function(event) {
+  // Find the closest card element
+  let card = event.target;
+  while (card && !card.classList.contains('card')) {
+    card = card.parentElement;
+  }
+
+  if (!card) return;
+
+  // Toggle card flip
+  card.classList.toggle('flipped');
+});</code></pre>
+  </div>
+
+  <div class="note">
+    <strong>Note:</strong> Event delegation has several advantages:
+    <ul>
+      <li>It works for dynamically added elements without re-registering listeners</li>
+      <li>It reduces memory usage by using fewer event listeners</li>
+      <li>It simplifies code for handling large numbers of similar elements</li>
+    </ul>
+  </div>
+
+  <h2>Working with Data Attributes</h2>
+  <p>
+    Data attributes (data-*) provide a way to store custom data directly in HTML elements.
+    This is particularly useful for associating application data with DOM elements.
+  </p>
+
+  <div class="example">
+    <h3>Using data-* Attributes</h3>
+    <pre><code>// HTML: &lt;div id="card" data-index="1" data-pokemon='{"id":25,"name":"Pikachu"}'&gt;&lt;/div&gt;
+
+// Reading data attributes
+const card = document.getElementById('card');
+const index = card.dataset.index; // "1"
+const pokemonData = JSON.parse(card.dataset.pokemon); // {id: 25, name: "Pikachu"}
+
+// Setting data attributes
+card.dataset.captured = "true";
+card.dataset.level = 42;
+
+// In our Pokemon Card Flip app:
+function assignPokemonToCard(card, pokemon) {
+  // Store Pokemon data in card dataset as JSON string
+  card.dataset.pokemon = JSON.stringify(pokemon);
+
+  // ... update card display
+
+  // Later, we can retrieve it:
+  // const storedPokemon = JSON.parse(card.dataset.pokemon);
+}</code></pre>
+  </div>
+
+  <h2>Animating with CSS and JavaScript</h2>
+  <p>
+    You can create engaging animations by combining CSS transitions/animations with JavaScript DOM manipulation.
+  </p>
+
+  <div class="example">
+    <h3>Card Flip Animation</h3>
+    <pre><code>/* CSS for card flip animation */
+.card {
+  perspective: 1000px;
+  width: 200px;
+  height: 300px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* JavaScript to trigger the animation */
+function handleCardClick(event) {
+  // Find the clicked card
+  let card = event.target;
+  while (card && !card.classList.contains('card')) {
+    card = card.parentElement;
+  }
+
+  if (!card) return;
+
+  // Toggle card flip
+  card.classList.toggle('flipped');
+}</code></pre>
+  </div>
+
+  <h2>Managing Loading States</h2>
+  <p>
+    When fetching data, it's important to provide visual feedback to users to indicate that
+    something is happening.
+  </p>
+
+  <div class="pattern">
+    <h3>Implementing a Loading Spinner</h3>
+    <pre><code>// HTML:
+// &lt;div id="loading-spinner" class="hidden"&gt;Loading...&lt;/div&gt;
+// &lt;div id="card-grid"&gt;&lt;/div&gt;
+
+// CSS:
+// .hidden { display: none; }
+
+// JavaScript:
+async function initApp() {
+  // Show loading spinner
+  showLoading();
+
+  // Hide the card grid initially
+  cardGrid.classList.add('hidden');
+
+  // Fetch data and create elements
+  await fetchAndAssignPokemon();
+
+  // Hide loading spinner and show cards
+  hideLoading();
+  cardGrid.classList.remove('hidden');
+}
+
+function showLoading() {
+  loadingSpinner.classList.remove('hidden');
+}
+
+function hideLoading() {
+  loadingSpinner.classList.add('hidden');
+}</code></pre>
+  </div>
+
+  <h2>Working with Third-Party APIs</h2>
+  <p>
+    In our Pokemon Card Flip application, we fetch data from the PokeAPI to populate our cards.
+    Here's how we handle API interactions:
+  </p>
+
+  <div class="example">
+    <h3>Fetching and Displaying API Data</h3>
+    <pre><code>// Fetch data from the API
+async function fetchRandomPokemon() {
+  try {
+    // Generate a random ID
+    const randomId = Math.floor(Math.random() * TOTAL_POKEMON) + 1;
+
+    // Fetch the data
+    const response = await fetch(`${API_BASE_URL}/pokemon/${randomId}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Pokemon: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Process the data
+    return processPokemonData(data);
+  } catch (error) {
+    console.error('Error fetching random Pokemon:', error);
+    return null;
+  }
+}
+
+// Process the data into a more usable format
+function processPokemonData(data) {
+  return {
+    id: data.id,
+    name: capitalizeFirstLetter(data.name),
+    sprite: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+    types: data.types.map(type => type.type.name),
+    height: data.height / 10, // Convert to meters
+    weight: data.weight / 10, // Convert to kilograms
+    abilities: data.abilities.map(ability => capitalizeFirstLetter(ability.ability.name)),
+    stats: {
+      hp: findStat(data.stats, 'hp'),
+      attack: findStat(data.stats, 'attack'),
+      defense: findStat(data.stats, 'defense'),
+      speed: findStat(data.stats, 'speed')
+    }
+  };
+}
+
+// Display the data in the DOM
+function assignPokemonToCard(card, pokemon) {
+  if (!card || !pokemon) return;
+
+  // Store data in dataset
+  card.dataset.pokemon = JSON.stringify(pokemon);
+
+  // Update visual elements
+  const cardBack = card.querySelector('.card-back');
+  cardBack.innerHTML = '';
+
+  const pokemonImg = document.createElement('img');
+  pokemonImg.src = pokemon.sprite;
+  pokemonImg.alt = pokemon.name;
+
+  // Create and append other elements...
+}</code></pre>
+  </div>
+
+  <h2>Handling Performance Considerations</h2>
+  <p>
+    When manipulating the DOM, it's important to consider performance, especially when:
+  </p>
+  <ul>
+    <li>Creating or updating many elements at once</li>
+    <li>Adding event listeners to many elements</li>
+    <li>Repeatedly accessing or modifying elements</li>
+  </ul>
+
+  <div class="pattern">
+    <h3>Performance Best Practices</h3>
+    <pre><code>// AVOID: Inefficient DOM updates
+for (let i = 0; i < 1000; i++) {
+  const div = document.createElement('div');
+  div.textContent = i;
+  container.appendChild(div); // Causes reflow on EACH iteration
+}
+
+// BETTER: Use document fragments
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 1000; i++) {
+  const div = document.createElement('div');
+  div.textContent = i;
+  fragment.appendChild(div);
+}
+container.appendChild(fragment); // Only ONE reflow at the end
+
+// AVOID: Repeatedly reading/writing properties
+const box = document.getElementById('box');
+const width = box.offsetWidth; // READ
+box.style.width = width + 10 + 'px'; // WRITE
+const height = box.offsetHeight; // READ (forces reflow)
+box.style.height = height + 10 + 'px'; // WRITE
+
+// BETTER: Batch reads and writes
+const box = document.getElementById('box');
+// Read phase
+const width = box.offsetWidth;
+const height = box.offsetHeight;
+// Write phase
+box.style.width = width + 10 + 'px';
+box.style.height = height + 10 + 'px';</code></pre>
+  </div>
+
+  <div class="note">
+    <strong>Note:</strong> In our Pokemon Card Flip app, we use several performance optimizations:
+    <ul>
+      <li>Event delegation on the card grid rather than individual cards</li>
+      <li>Creating all card elements at once before adding them to the DOM</li>
+      <li>Manipulating element content before inserting into the DOM</li>
+      <li>Using CSS transitions for animations instead of JavaScript</li>
+    </ul>
+  </div>
+
+  <h2>Best Practices for DOM Manipulation</h2>
+  <ul>
+    <li><strong>Cache DOM references</strong> - Store elements you'll use repeatedly in variables rather than repeatedly
+      querying the DOM</li>
+    <li><strong>Use document fragments</strong> - When adding multiple elements, use a document fragment and append it
+      once</li>
+    <li><strong>Apply event delegation</strong> - Attach event listeners to parent elements rather than individual
+      children</li>
+    <li><strong>Minimize DOM reflows</strong> - Batch your reads and writes to the DOM</li>
+    <li><strong>Use appropriate selectors</strong> - getElementById and getElementsByClassName are faster than
+      querySelector</li>
+    <li><strong>Modify classes instead of styles</strong> - Use classList to toggle pre-defined CSS classes rather than
+      inline styles</li>
+    <li><strong>Virtualize long lists</strong> - For very long lists, only render the visible items</li>
+  </ul>
+
+  <h2>Further Learning Resources</h2>
+  <ul>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction">MDN: Introduction
+        to the DOM</a></li>
+    <li><a
+        href="https://developer.mozilla.org/en-US/docs/Web/API/Document_object_model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces">MDN:
+        Traversing the DOM</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset">MDN: Using data attributes</a>
+    </li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList">MDN: Using classList</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener">MDN: Event listeners</a>
+    </li>
+  </ul>
+
+</body>
+
+</html>

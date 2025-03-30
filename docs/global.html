@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Global Scope and Window Object</title>
+  <link rel="shortcut icon" href="./microscope.png" type="image/png">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="site-nav">
+        <div class="logo">
+          <a href="index.html">
+            <img src="./pokeball.png" alt="Pokeball Logo" class="logo-img">
+            <span>Pokemon Card Flip</span>
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="assignment.html" class="nav-link">Assignment</a></li>
+          <li><a href="js-tutorial.html" class="nav-link">DOM Calls</a></li>
+          <li><a href="global.html" class="nav-link">Global Scope</a></li>
+          <li><a href="testing.html" class="nav-link">Testing</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="header">
+    <h1>JavaScript Global Scope and Window Object</h1>
+    <p>Understanding how the Pokemon Card Flip app makes functions globally available</p>
+  </div>
+
+  <h2>Introduction to Global Scope</h2>
+  <p>
+    In JavaScript, the <strong>global scope</strong> refers to the outermost execution context, where variables and
+    functions are accessible from anywhere in your code. In web browsers, the global scope is represented by the
+    <code>window</code> object, which serves as the global object for all JavaScript code running in the browser.
+  </p>
+
+  <div class="note">
+    <strong>Note:</strong> In different JavaScript environments, the global object may vary:
+    <ul>
+      <li>In browsers: <code>window</code></li>
+      <li>In Node.js: <code>global</code></li>
+      <li>In Web Workers: <code>self</code></li>
+    </ul>
+    But in our Pokemon Card Flip app, we're working in the browser environment, so we use <code>window</code>.
+  </div>
+
+  <h2>The Window Object in Browsers</h2>
+  <p>
+    The <code>window</code> object is the top-level object in the browser's JavaScript environment. It represents the
+    browser window and provides methods to control it. Some of its key aspects include:
+  </p>
+  <ul>
+    <li>It contains all global JavaScript variables and functions</li>
+    <li>It provides access to browser features like location, history, localStorage, etc.</li>
+    <li>It's the default object, so properties like <code>window.alert()</code> can be called as <code>alert()</code>
+    </li>
+    <li>It's the global execution context for all scripts loaded in the same window or frame</li>
+  </ul>
+
+  <div class="example">
+    <h3>Accessing Window Properties</h3>
+    <pre><code>// These are equivalent
+window.alert("Hello!");
+alert("Hello!");
+
+// Getting browser information
+console.log(window.navigator.userAgent);
+console.log(navigator.userAgent);  // window is implied
+
+// Manipulating the browser window
+window.scrollTo(0, 100);
+window.resizeTo(800, 600);  // (may be restricted by browsers)</code></pre>
+  </div>
+
+  <h2>Using Window for Global Variables and Functions</h2>
+  <p>
+    When you declare variables or functions at the top level of your code (outside any function or block), they become
+    properties of the window object:
+  </p>
+
+  <div class="example">
+    <h3>Global Variables and Functions</h3>
+    <pre><code>// Global variable
+var globalVar = "I'm global!";
+console.log(window.globalVar);  // "I'm global!"
+
+// Global function
+function sayHello() {
+  return "Hello, world!";
+}
+console.log(window.sayHello());  // "Hello, world!"</code></pre>
+  </div>
+
+  <div class="note">
+    <strong>Important:</strong> With <code>let</code> and <code>const</code> (introduced in ES6), variables declared at
+    the top level are still global but are not added as properties to the window object:
+    <pre><code>let modernVar = "I'm global but not on window";
+const CONSTANT = "Same here";
+
+console.log(window.modernVar);  // undefined
+console.log(modernVar);        // "I'm global but not on window"</code></pre>
+  </div>
+
+  <h2>Explicitly Adding to Window in the Pokemon Card Flip App</h2>
+  <p>
+    In our Pokemon Card Flip application, we deliberately attach the <code>PokemonService</code> object to the window to
+    make its functions globally available:
+  </p>
+
+  <div class="pattern">
+    <h3>From pokemon.js</h3>
+    <pre><code>// Define functions
+async function fetchRandomPokemon() {
+    // Function implementation...
+}
+
+async function fetchMultipleRandomPokemon(count) {
+    // Function implementation...
+}
+
+// Export simplified functions for use in app.js
+window.PokemonService = {
+    fetchRandomPokemon,
+    fetchMultipleRandomPokemon
+};</code></pre>
+  </div>
+
+  <h3>Why We're Using This Approach</h3>
+  <p>
+    In the Pokemon Card Flip app, we attach the PokemonService to the window object for several important reasons:
+  </p>
+  <ul>
+    <li><strong>Script Loading Simplicity</strong>: It allows us to load scripts in separate tags without requiring a
+      module bundler</li>
+    <li><strong>Straightforward Access</strong>: The app.js file can directly access these functions without any imports
+    </li>
+    <li><strong>Educational Clarity</strong>: It makes the relationships between files more visible for learning
+      purposes
+    </li>
+    <li><strong>Browser Compatibility</strong>: It works in all browsers without requiring modern module features</li>
+  </ul>
+
+  <div class="example">
+    <h3>How app.js Uses the Global PokemonService</h3>
+    <pre><code>// In app.js
+async function fetchAndAssignPokemon() {
+    try {
+        // Uses the globally available PokemonService
+        const pokemonList = await PokemonService.fetchMultipleRandomPokemon(CARD_COUNT);
+
+        // Rest of the function...
+    } catch (error) {
+        console.error('Error fetching and assigning Pokemon:', error);
+    }
+}</code></pre>
+  </div>
+
+  <h2>Global Objects vs. ES Modules</h2>
+  <p>
+    While we're using global objects in this project, modern JavaScript development typically uses ES Modules instead.
+    Here's a comparison of both approaches:
+  </p>
+
+  <div class="compare">
+    <div>
+      <h4>Global Object Approach (Our Current Method)</h4>
+      <pre><code>// pokemon.js
+function fetchRandomPokemon() {
+  // Implementation...
+}
+
+function fetchMultipleRandomPokemon() {
+  // Implementation...
+}
+
+window.PokemonService = {
+  fetchRandomPokemon,
+  fetchMultipleRandomPokemon
+};
+
+// app.js
+// No import needed, PokemonService is global
+function someFunction() {
+  PokemonService.fetchRandomPokemon();
+}
+
+// index.html
+&lt;script src="js/pokemon.js"&gt;&lt;/script&gt;
+&lt;script src="js/app.js"&gt;&lt;/script&gt;</code></pre>
+    </div>
+    <div>
+      <h4>ES Modules Approach (Modern Alternative)</h4>
+      <pre><code>// pokemon.js
+export function fetchRandomPokemon() {
+  // Implementation...
+}
+
+export function fetchMultipleRandomPokemon() {
+  // Implementation...
+}
+
+// app.js
+import {
+  fetchRandomPokemon,
+  fetchMultipleRandomPokemon
+} from './pokemon.js';
+
+function someFunction() {
+  fetchRandomPokemon();
+}
+
+// index.html
+&lt;script type="module" src="js/app.js"&gt;&lt;/script&gt;</code></pre>
+    </div>
+  </div>
+
+  <h2>Advantages and Disadvantages</h2>
+
+  <h3>Advantages of the Global Object Approach</h3>
+  <ul>
+    <li><strong>Simplicity</strong>: No build tools or bundlers needed</li>
+    <li><strong>Direct Browser Support</strong>: Works with basic script tags</li>
+    <li><strong>Learning Curve</strong>: Easier to understand for beginners</li>
+    <li><strong>Independence</strong>: Files can be loaded in any order (as long as dependencies are loaded first)</li>
+  </ul>
+
+  <h3>Disadvantages of the Global Object Approach</h3>
+  <ul>
+    <li><strong>Global Namespace Pollution</strong>: Risk of naming conflicts</li>
+    <li><strong>Implicit Dependencies</strong>: Hard to track which file depends on what</li>
+    <li><strong>Limited Encapsulation</strong>: Private functions and variables are harder to implement</li>
+    <li><strong>Modern Development</strong>: Doesn't align with current JavaScript best practices</li>
+  </ul>
+
+  <div class="note">
+    <strong>Learning Path:</strong> In real-world professional development, you would likely use ES Modules with a build
+    tool like Vite, Webpack, or Rollup. This project is intentionally keeping things simple to focus on core JavaScript
+    concepts before introducing build systems.
+  </div>
+
+  <h2>Best Practices When Using the Global Approach</h2>
+  <p>
+    If you're using the global object approach (as we are in this project), here are some best practices to follow:
+  </p>
+
+  <ol>
+    <li><strong>Namespace Your Globals</strong>: Group related functionality under a single global object (like our
+      PokemonService)</li>
+    <li><strong>Minimize Global Variables</strong>: Only expose what's absolutely necessary to other scripts</li>
+    <li><strong>Use Descriptive Names</strong>: Choose unique, descriptive names to avoid conflicts</li>
+    <li><strong>Document Dependencies</strong>: Clearly document which scripts depend on others</li>
+    <li><strong>Consider the Revealing Module Pattern</strong>: Use closures to create private scope while exposing only
+      what's needed</li>
+  </ol>
+
+  <div class="example">
+    <h3>The Revealing Module Pattern</h3>
+    <pre><code>// A more sophisticated way to manage globals
+window.PokemonService = (function() {
+  // Private variables and functions
+  const API_BASE_URL = 'https://pokeapi.co/api/v2';
+  const TOTAL_POKEMON = 1008;
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() +
+           string.replace('-', ' ').slice(1);
+  }
+
+  // Public functions
+  async function fetchRandomPokemon() {
+    // Implementation using private variables...
+  }
+
+  async function fetchMultipleRandomPokemon(count) {
+    // Implementation...
+  }
+
+  // Only reveal what should be public
+  return {
+    fetchRandomPokemon,
+    fetchMultipleRandomPokemon
+  };
+})();</code></pre>
+  </div>
+
+  <h2>Conclusion</h2>
+  <p>
+    In the Pokemon Card Flip app, we use the window object to make functions globally available across different script
+    files. This approach provides simplicity and clarity for learning, though modern JavaScript development typically
+    favors ES Modules for better encapsulation and organization.
+  </p>
+  <p>
+    Understanding how global scope works in JavaScript is essential for building multi-file applications and managing
+    dependencies between different parts of your code.
+  </p>
+
+  <div class="note">
+    <strong>Next Steps:</strong> As you become more comfortable with JavaScript, consider exploring ES Modules and build
+    tools like Vite or Webpack, which offer more robust approaches to code organization in larger applications.
+  </div>
+
+  <h2>Further Learning Resources</h2>
+  <ul>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window">MDN: Window Object</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">MDN: JavaScript Modules</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Global_object">MDN: Global Object</a></li>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures">MDN: Closures</a></li>
+  </ul>
+
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+{
+  "name": "pokemon-card-flip",
+  "version": "1.0.0",
+  "description": "An interactive web application that displays a grid of Pokémon cards. When clicked, each card flips to reveal a random Pokémon with its name, type, and image.",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint js/",
+    "lint:fix": "eslint js/ --fix"
+  },
+  "keywords": [
+    "pokemon",
+    "cards",
+    "flip",
+    "web",
+    "app",
+    "javascript",
+    "css",
+    "html",
+    "pokeapi"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.42.0",
+    "serve": "^14.0.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/pokemon-card-flip.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/pokemon-card-flip/issues"
+  },
+  "homepage": "https://github.com/your-username/pokemon-card-flip#readme"
+}
