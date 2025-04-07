@@ -3,6 +3,8 @@
  * This file contains the main functionality for the Pokemon Card Flip App
  */
 
+const DEBUG = true;
+
 // DOM Elements
 const cardGrid = document.getElementById('card-grid');
 const loadingSpinner = document.getElementById('loading-spinner');
@@ -34,7 +36,33 @@ async function initApp() {
   // 6. Hide the loading spinner by calling hideLoading()
   // 7. Show the card grid by removing the 'hidden' class
 
-  // YOUR CODE HERE
+  showLoading();
+
+  console.log('App initialization started');
+
+  cardGrid.classList.add('hidden');
+
+  console.log('Added hidden class.');
+
+  createCardElements();
+
+  console.log('Cards created.');
+
+  const pokemonData = await fetchAndAssignPokemon();
+
+  console.log('Pokemon data fetched.');
+
+  setupEventListeners();
+
+  console.log('Event listeners set up.');
+
+  hideLoading();
+
+  console.log('Spinner hide loading complete.');
+
+  cardGrid.classList.remove('hidden');
+
+  console.log('App initialization completed.');
 
   // DEBUGGING TIP: You can verify your initialization sequence by adding:
   // console.log('App initialization started');
@@ -60,7 +88,25 @@ function createCardElements() {
   // 5. Append each created card to the cardGrid
   // 6. Push each card into the cards array
 
-  // YOUR CODE HERE
+  cardGrid.innerHTML = '';
+
+  console.log('Set cardGrid.innerHTML to empty string.');
+
+  const cards = [];
+
+  console.log('Reset the cards array to empty array.');
+
+  for (let i = 0; i < CARD_COUNT - 1; i++) {
+    let cardElement = createCardElement(i);
+    cardGrid.append(cardElement);
+    cards.push(cardElement);
+  }
+
+  console.log('Created a for loop.');
+
+  console.log(`Created ${cards.length} cards`);
+
+  console.log('Card grid content:', cardGrid.innerHTML);
 
   // DEBUGGING TIP: Verify your card creation process:
   // console.log(`Created ${cards.length} cards`);
@@ -92,13 +138,49 @@ function createCardElement(index) {
   // 9. Append cardInner to card
   // 10. Return the fully constructed card
 
-  // YOUR CODE HERE
+  const mainCardDiv = document.createElement('div');
+
+  mainCardDiv.classList.add('card');
+
+  mainCardDiv.index = index;
+
+  const cardInnerDiv = document.createElement('div');
+
+  cardInnerDiv.classList.add('card-inner');
+
+  const cardFrontDiv = document.createElement('div');
+
+  cardFrontDiv.classList.add('card-front');
+
+  const cardBackDiv = document.createElement('div');
+
+  cardBackDiv.classList.add('card-back');
+
+  const pokeballImage = document.createElement('img');
+
+  pokeballImage.src = 'assets/pokeball.png';
+
+  pokeballImage.alt = 'Pokéball';
+
+  pokeballImage.classList.add('pokeball-img');
+
+  cardFrontDiv.append(pokeballImage);
+
+  cardInnerDiv.append(cardFrontDiv);
+
+  cardInnerDiv.append(cardBackDiv);
+
+  mainCardDiv.append(cardInnerDiv);
+
+  console.log(`Card ${index} children:`, mainCardDiv.children);
+  console.log('Card inner children:', cardInnerDiv.children);
+
+  return mainCardDiv;
 
   // DEBUGGING TIP: You can log the structure of the created card:
   // console.log(`Card ${index} structure:`, card);
   // To check if all elements are properly nested:
-  // console.log(`Card ${index} children:`, card.children);
-  // console.log(`Card inner children:`, cardInner.children);
+
 }
 
 /**
@@ -117,7 +199,24 @@ async function fetchAndAssignPokemon() {
   //    with the corresponding Pokemon from the pokemonList
   // 5. In the catch block, log any errors with console.error
 
-  // YOUR CODE HERE
+  try {
+    console.log('Starting to fetch Pokemon');
+
+    const pokemonList = await PokemonService.fetchMultipleRandomPokemon(CARD_COUNT);
+
+    console.log(`Fetched ${pokemonList.length} Pokemon:`, pokemonList);
+
+    if (DEBUG_SHOW_SPINNER) {
+      await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
+    }
+
+    for (let i = 0; i < cards.length - 1; i++) {
+      assignPokemonToCard(cards[i], pokemonList[i]);
+      console.log(`Assigning Pokemon ${i + 1} to card ${i}`);
+    }
+  } catch (error) {
+    console.error('Pokemon fetch error details:', error.message, error.stack);
+  }
 
   // DEBUGGING TIP: Log each stage of the process:
   // console.log('Starting to fetch Pokemon');
@@ -149,7 +248,86 @@ function assignPokemonToCard(card, pokemon) {
   //    c. Pokemon types (div with type badges)
   //    d. Pokemon stats (height, weight, abilities count)
 
-  // YOUR CODE HERE
+  if (!card) {
+    console.error('Card is falsy.');
+
+    return;
+  }
+
+  card.dataset.pokemon = JSON.stringify(pokemon);
+
+  console.log(`Assigning Pokemon "${pokemon.name}" to card`);
+
+  const cardBackElement = card.querySelector('.card-back');
+
+  console.log('Pokemon data stored in card:', JSON.parse(card.dataset.pokemon));
+
+  cardBackElement.innerHTML = '';
+
+  const pokemonImage = document.createElement('img');
+
+  pokemonImage.src = pokemon.sprite;
+
+  pokemonImage.alt = pokemon.name;
+
+  pokemonImage.className = 'pokemon-image';
+
+  const pokemonName = document.createElement('h2');
+
+  pokemonName.textContent = pokemon.name;
+
+  pokemonName.className = 'pokemon-name';
+
+  pokemon.types.forEach((type) => {
+    const typeBadge = document.createElement('span');
+    typeBadge.textContext = type;
+    typeBadge.className = `type-badge ${type}`;
+    pokemonTypes.appendChild(typeBadge);
+  });
+
+  const pokemonTypes = document.createElement('div');
+
+  pokemonTypes.classList.add('.type-badge');
+
+  const pokemonStats = document.createElement('div');
+
+  pokemonStats.className = 'pokemon-stats';
+
+  const heightStat = document.createElement('div');
+
+  heightStat.className = 'stat';
+
+  heightStat.innerHTML = `<span>Height</span><span class = "Stat value">${pokemon.height}m</span>`;
+
+  const weightStat = document.createElement('div');
+
+  weightStat.className = 'stat';
+
+  weightStat.innerHTML = `<span>Weight</span><span class = "Stat value">${pokemon.weight}kg</span>`;
+
+  const abilitiesStat = document.createElement('div');
+
+  abilitiesStat.className = 'stat';
+
+  abilitiesStat.innerHTML = `<span>Abilities</span><span class = "Stat value">${pokemon.abilities.length}</span>`;
+
+  pokemonStats.classList.add('.pokemon-stats');
+
+  pokemonStats.appendChild(heightStat);
+
+  pokemonStats.appendChild(weightStat);
+
+  pokemonStats.appendChild(abilitiesStat);
+
+  cardBackElement.appendChild(pokemonImage);
+
+  cardBackElement.appendChild(pokemonName);
+
+  cardBackElement.appendChild(pokemonTypes);
+
+  cardBackElement.appendChild(pokemonStats);
+
+  console.log('Card back contents after assignment:', cardBackElement.innerHTML);
 
   // DEBUGGING TIP: Verify the Pokemon data is correctly stored:
   // console.log(`Assigning Pokemon "${pokemon.name}" to card`);
@@ -172,7 +350,28 @@ function handleCardClick(event) {
   // 2. If no card was found (card is falsy), return early
   // 3. Toggle the 'flipped' class on the card to trigger the flip animation
 
-  // YOUR CODE HERE
+  let found = false;
+
+  let card = event.target;
+
+  console.log('Click event target:', event.target);
+  while (card) {
+    if (card.classList.contains('card')) {
+      found = true;
+      console.log('Found card element:', card);
+      break;
+    }
+
+    card = card.parentElement;
+  }
+
+  if (!found) {
+    return;
+  }
+
+  card.classList.toggle('flipped');
+
+  console.log('Card flipped state:', card.classList.contains('flipped'));
 
   // DEBUGGING TIP: You can track the click target and found card:
   // console.log('Click event target:', event.target);
@@ -190,7 +389,11 @@ function setupEventListeners() {
   // 1. Add a click event listener to the cardGrid element
   // 2. Use the handleCardClick function as the event handler
 
-  // YOUR CODE HERE
+  cardGrid.addEventListener('click', handleCardClick);
+
+  console.log('Event listeners have been set up');
+
+  console.log('To see all event listeners, use DevTools');
 
   // DEBUGGING TIP: Verify the event listener was attached:
   // console.log('Event listeners have been set up');
@@ -207,7 +410,9 @@ function showLoading() {
   // CHALLENGE 8: Implement the show loading function
   // 1. Remove the 'hidden' class from the loadingSpinner element
 
-  // YOUR CODE HERE
+  loadingSpinner.classList.remove('hidden');
+
+  console.log('Loading spinner visible:', !loadingSpinner.classList.contains('hidden'));
 
   // DEBUGGING TIP: Confirm the spinner's visibility state:
   // console.log('Loading spinner visible:', !loadingSpinner.classList.contains('hidden'));
@@ -222,7 +427,9 @@ function hideLoading() {
   // CHALLENGE 9: Implement the hide loading function
   // 1. Add the 'hidden' class to the loadingSpinner element
 
-  // YOUR CODE HERE
+  loadingSpinner.classList.add('hidden');
+
+  console.log('Loading spinner hidden:', loadingSpinner.classList.contains('hidden'));
 
   // DEBUGGING TIP: Confirm the spinner's visibility state:
   // console.log('Loading spinner hidden:', loadingSpinner.classList.contains('hidden'));
@@ -232,7 +439,9 @@ function hideLoading() {
 // 1. Add an event listener for the 'DOMContentLoaded' event on the document
 // 2. Use the initApp function as the event handler
 
-// YOUR CODE HERE
+document.addEventListener('DOMContentLoaded', initApp);
+
+
 
 // DEBUGGING TIP: You can add a global debug flag at the top of your file:
 // const DEBUG = true;

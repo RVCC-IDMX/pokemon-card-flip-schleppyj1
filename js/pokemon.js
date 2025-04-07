@@ -29,7 +29,27 @@ async function fetchRandomPokemon() {
   // 8. Return the processed Pokemon data
   // 9. In the catch block, log the error and return null
 
-  // YOUR CODE HERE
+  try {
+    console.log('starting to pull data.');
+    const randomId = Math.floor(Math.random() * (TOTAL_POKEMON - 1)) + 1;
+    console.log('randomId = randomId');
+    const response = await fetch(`${API_BASE_URL}/pokemon/${randomId}`);
+
+    if (!response.ok) {
+      throw new Error('Unable to retrieve random pokemon data.');
+    }
+
+    const data = await response.json();
+
+    console.log('fetchRandomPokemon pokemonData returned is ' + data);
+
+    return processPokemonData(data);
+
+  } catch (error) {
+    console.error('fetchRandomPokemon error: ' + error);
+
+    return null;
+  }
 
   // DEBUGGING TIP: Track the API request:
   // console.log(`Fetching Pokemon with ID: ${randomId}`);
@@ -61,7 +81,29 @@ async function fetchMultipleRandomPokemon(count) {
   // 5. Return the 'pokemonList'.
   // 6. In the catch block, log the error using console.error and return an empty array.
 
-  // YOUR CODE HERE
+  try {
+    const promises = [];
+    count = 12;
+    console.log('Count = ' + count);
+    for (let i = 0; i < count - 1; i++) {
+      console.log('Fetching iteration ' + i);
+      const randomPokemon = await fetchRandomPokemon();
+
+      promises.push(randomPokemon);
+    }
+
+    console.log('promises length = ' + promises.length);
+
+    const pokemonList = await Promise.all(promises);
+
+    console.log('returned pokemonListLength = ' + pokemonList.length);
+
+    return pokemonList;
+  } catch (error) {
+    console.error('Unable to fetch multiple random pokemon.');
+
+    return [];
+  }
 
   // DEBUGGING TIP:
   // - Before calling Promise.all,
@@ -93,7 +135,34 @@ function processPokemonData(data) {
   //    - stats: an object with hp, attack, defense and speed (use findStat)
   //    - speciesUrl: the URL to the Pokemon's species data
 
-  // YOUR CODE HERE
+  console.log('Raw Pokemon data structure:', {
+    id: data.id,
+    name: data.name,
+    sprites: data.sprites,
+    types: data.types,
+    height: data.height,
+    weight: data.weight,
+    abilities: data.abilities,
+    stats: data.stats
+  });
+
+  return {
+    id: data.id,
+    name: capitalizeFirstLetter(data.name),
+    sprite: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+    types: data.types.map(type => type.type.name),
+    height: data.height / 10,
+    weight: data.weight / 10,
+    abilities: data.abilities.map(ability => capitalizeFirstLetter(ability.ability.name)),
+    stats: {
+      hp: findStat(data.stats, 'hp'),
+      attack: findStat(data.stats, 'attack'),
+      defense: findStat(data.stats, 'defense'),
+      speed: findStat(data.stat, 'speed')
+    },
+    speciesUrl: data.species.url
+
+  };
 
   // DEBUGGING TIP: Log the raw vs processed data:
   // console.log('Raw Pokemon data structure:', {
@@ -125,7 +194,17 @@ function findStat(stats, statName) {
   // 1. Use the find method to locate the stat object with stat.name === statName
   // 2. Return the base_stat value if found or 0 if not found
 
-  // YOUR CODE HERE
+  const stat = stats.find((s) => {
+    return s.stat.name === statName;
+  });
+
+
+  if (stat) {
+    return (stat);
+  } else {
+    return 0;
+  }
+
 
   // DEBUGGING TIP: Trace the stat search:
   // console.log(`Looking for stat "${statName}" in:`, stats);
@@ -150,7 +229,7 @@ function capitalizeFirstLetter(string) {
   // 4. Get the rest of the string using slice(1)
   // 5. Combine and return the uppercase first letter with the rest of the string
 
-  // YOUR CODE HERE
+  return string.charAt(0).toUpperCase() + string.replace('-', '').slice(1);
 
   // DEBUGGING TIP: Track string transformation:
   // console.log(`Input string: "${string}"`);
@@ -165,8 +244,18 @@ function capitalizeFirstLetter(string) {
 // 1. Expose the Pokemon service functions through the window object
 // 2. Create a PokemonService object with fetchRandomPokemon and fetchMultipleRandomPokemon
 
-// YOUR CODE HERE
+const PokemonService = {
+  fetchRandomPokemon: function () {
+    return fetchRandomPokemon();
+  },
+  fetchMultipleRandomPokemon: function () {
+    return fetchMultipleRandomPokemon();
+  }
+};
+
+window.PokemonService = PokemonService;
+
 
 // DEBUGGING TIP: Verify the global export:
-// console.log('PokemonService exposed to window:', !!window.PokemonService);
-// console.log('Available methods:', Object.keys(window.PokemonService));
+console.log('PokemonService exposed to window:', !!window.PokemonService);
+console.log('Available methods:', Object.keys(window.PokemonService));
