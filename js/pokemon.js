@@ -83,7 +83,7 @@ async function fetchMultipleRandomPokemon(count) {
 
   try {
     const promises = [];
-    count = 12;
+    //count = 12;
     console.log('Count = ' + count);
     for (let i = 0; i < count - 1; i++) {
       console.log('Fetching iteration ' + i);
@@ -158,7 +158,7 @@ function processPokemonData(data) {
       hp: findStat(data.stats, 'hp'),
       attack: findStat(data.stats, 'attack'),
       defense: findStat(data.stats, 'defense'),
-      speed: findStat(data.stat, 'speed')
+      speed: findStat(data.stats, 'speed')
     },
     speciesUrl: data.species.url
 
@@ -200,7 +200,7 @@ function findStat(stats, statName) {
 
 
   if (stat) {
-    return (stat);
+    return (stat.base_stat);
   } else {
     return 0;
   }
@@ -248,8 +248,8 @@ const PokemonService = {
   fetchRandomPokemon: function () {
     return fetchRandomPokemon();
   },
-  fetchMultipleRandomPokemon: function () {
-    return fetchMultipleRandomPokemon();
+  fetchMultipleRandomPokemon: function (count) {
+    return fetchMultipleRandomPokemon(count);
   }
 };
 

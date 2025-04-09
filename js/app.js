@@ -92,7 +92,7 @@ function createCardElements() {
 
   console.log('Set cardGrid.innerHTML to empty string.');
 
-  const cards = [];
+  //const cards = [];
 
   console.log('Reset the cards array to empty array.');
 
@@ -248,7 +248,7 @@ function assignPokemonToCard(card, pokemon) {
   //    c. Pokemon types (div with type badges)
   //    d. Pokemon stats (height, weight, abilities count)
 
-  if (!card) {
+  if (!card || !pokemon) {
     console.error('Card is falsy.');
 
     return;
@@ -278,6 +278,8 @@ function assignPokemonToCard(card, pokemon) {
 
   pokemonName.className = 'pokemon-name';
 
+  const pokemonTypes = document.createElement('div');
+
   pokemon.types.forEach((type) => {
     const typeBadge = document.createElement('span');
     typeBadge.textContext = type;
@@ -285,7 +287,7 @@ function assignPokemonToCard(card, pokemon) {
     pokemonTypes.appendChild(typeBadge);
   });
 
-  const pokemonTypes = document.createElement('div');
+
 
   pokemonTypes.classList.add('.type-badge');
 
