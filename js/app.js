@@ -96,7 +96,7 @@ function createCardElements() {
 
   console.log('Reset the cards array to empty array.');
 
-  for (let i = 0; i < CARD_COUNT - 1; i++) {
+  for (let i = 0; i <= CARD_COUNT - 1; i++) {
     let cardElement = createCardElement(i);
     cardGrid.append(cardElement);
     cards.push(cardElement);
@@ -210,7 +210,7 @@ async function fetchAndAssignPokemon() {
       await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
     }
 
-    for (let i = 0; i < cards.length - 1; i++) {
+    for (let i = 0; i <= cards.length - 1; i++) {
       assignPokemonToCard(cards[i], pokemonList[i]);
       console.log(`Assigning Pokemon ${i + 1} to card ${i}`);
     }
@@ -270,7 +270,7 @@ function assignPokemonToCard(card, pokemon) {
 
   pokemonImage.alt = pokemon.name;
 
-  pokemonImage.className = 'pokemon-image';
+  pokemonImage.className = 'pokemon-img';
 
   const pokemonName = document.createElement('h2');
 
@@ -287,10 +287,6 @@ function assignPokemonToCard(card, pokemon) {
     pokemonTypes.appendChild(typeBadge);
   });
 
-
-
-  pokemonTypes.classList.add('.type-badge');
-
   const pokemonStats = document.createElement('div');
 
   pokemonStats.className = 'pokemon-stats';
@@ -299,21 +295,20 @@ function assignPokemonToCard(card, pokemon) {
 
   heightStat.className = 'stat';
 
-  heightStat.innerHTML = `<span>Height</span><span class = "Stat value">${pokemon.height}m</span>`;
+  heightStat.innerHTML = `<span>Height</span><span class = "stat-value">${pokemon.height}m</span>`;
 
   const weightStat = document.createElement('div');
 
   weightStat.className = 'stat';
 
-  weightStat.innerHTML = `<span>Weight</span><span class = "Stat value">${pokemon.weight}kg</span>`;
+  weightStat.innerHTML = `<span>Weight</span><span class = "stat-value">${pokemon.weight}kg</span>`;
 
   const abilitiesStat = document.createElement('div');
 
   abilitiesStat.className = 'stat';
 
-  abilitiesStat.innerHTML = `<span>Abilities</span><span class = "Stat value">${pokemon.abilities.length}</span>`;
-
-  pokemonStats.classList.add('.pokemon-stats');
+  abilitiesStat.innerHTML = `<span>Abilities</span>
+  <span class = "stat-value">${pokemon.abilities.length}</span>`;
 
   pokemonStats.appendChild(heightStat);
 
@@ -337,6 +332,12 @@ function assignPokemonToCard(card, pokemon) {
   // To check if all elements were created:
   // console.log('Card back contents after assignment:', cardBack.innerHTML);
 }
+
+// DEBUGGING TIP: Verify the Pokemon data is correctly stored:
+// console.log(`Assigning Pokemon "${pokemon.name}" to card`);
+// console.log('Pokemon data stored in card:', JSON.parse(card.dataset.pokemon));
+// To check if all elements were created:
+// console.log('Card back contents after assignment:', cardBack.innerHTML);
 
 /**
  * Handle card click
